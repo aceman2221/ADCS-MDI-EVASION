@@ -75,11 +75,10 @@ fi
 DOMAIN_NAME=$(echo $LDAP_DOMAIN | tr '[:upper:]' '[:lower:]')
 
 # Update the krb5.conf file
+# Update the krb5.conf file
 echo "Updating krb5.conf file..."
-TEMP_FILE=$(mktemp)
-sed '/\[libdefaults\]/,/^\[/{/^\[/!d}; /default_realm/{/^[[:space:]]*default_realm[[:space:]]*=/d}; /dns_lookup_kdc/{/^[[:space:]]*dns_lookup_kdc[[:space:]]*=/d}; /dns_lookup_realm/{/^[[:space:]]*dns_lookup_realm[[:space:]]*=/d}; /^\s*$/d' $KRB5_CONF > $TEMP_FILE
 
-cat <<EOL >> $TEMP_FILE
+cat <<EOL | sudo tee $KRB5_CONF > /dev/null
 [libdefaults]
     default_realm = $KERBEROS_REALM
     dns_lookup_kdc = false
@@ -98,7 +97,7 @@ cat <<EOL >> $TEMP_FILE
     $KERBEROS_REALM = {
         kdc = $LDAP_HOST
         admin_server = $LDAP_HOST
-        pkinit_anchors = FILE:$PWD/$PEM_FILE
+        pkinit_anchors = $PWD/$PEM_FILE
         pkinit_eku_checking = kpServerAuth
         pkinit_kdc_hostname = $LDAP_HOST
         pkinit_identities = $PWD/$CLIENT_CERT,$PWD/$CLIENT_KEY
@@ -109,11 +108,10 @@ cat <<EOL >> $TEMP_FILE
     $DOMAIN_NAME = $KERBEROS_REALM
 EOL
 
-mv $TEMP_FILE $KRB5_CONF
-
 # Print updated krb5.conf for debugging
 echo "Updated krb5.conf:"
 cat $KRB5_CONF
+
 
 # Perform kinit with the provided principal
 echo "Performing kinit with the provided principal..."
