@@ -1,21 +1,34 @@
 #!/bin/bash
 
-# Check if required tools are installed
-if ! command -v ldeep &> /dev/null || ! command -v jq &> /dev/null || ! command -v openssl &> /dev/null || ! command -v kinit &> /dev/null; then
-  echo "Required tools (ldeep, jq, openssl, kinit) are not installed. Installing them now"
-  echo "Installing Ldeep"
-  sudo pip3 install python-dev-tools
-  sudo apt-get install -y libkrb5-dev krb5-config gcc
-  sudo pip3 install ldeep 
-  echo "Installing jq"
-  sudo apt install -y jq
-  echo "installing openssl" 
-  sudo apt install -y openssl
-  echo "krb5-pkinit"
-  sudo apt install -y krb5-pkinit
+# Function to install a package if not already installed
+install_if_missing() {
+  local cmd=$1
+  local install_cmd=$2
+  local package_name=$3
   
-  exit 1
-fi
+  if ! command -v "$cmd" &> /dev/null; then
+    echo "$package_name is not installed. Installing it now..."
+    eval "$install_cmd"
+  else
+    echo "$package_name is already installed."
+  fi
+}
+
+# Check and install ldeep
+install_if_missing ldeep "sudo apt-get update && sudo apt-get install -y python3-pip python3-dev libkrb5-dev krb5-config gcc && sudo pip3 install ldeep" "Ldeep"
+
+# Check and install jq
+install_if_missing jq "sudo apt-get install -y jq" "jq"
+
+# Check and install openssl
+install_if_missing openssl "sudo apt-get install -y openssl" "OpenSSL"
+
+# Check and install kinit (krb5-user package includes kinit)
+install_if_missing kinit "sudo apt-get install -y krb5-user" "kinit (krb5-user)"
+
+# Check and install krb5-pkinit
+install_if_missing krb5-pkinit "sudo apt-get install -y krb5-pkinit" "krb5-pkinit"
+
 
 # Function to print usage
 usage() {
