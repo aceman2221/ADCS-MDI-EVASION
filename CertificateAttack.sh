@@ -2,7 +2,18 @@
 
 # Check if required tools are installed
 if ! command -v ldeep &> /dev/null || ! command -v jq &> /dev/null || ! command -v openssl &> /dev/null || ! command -v kinit &> /dev/null; then
-  echo "Required tools (ldeep, jq, openssl, kinit) are not installed. Please install them before running the script."
+  echo "Required tools (ldeep, jq, openssl, kinit) are not installed. Installing them now"
+  echo "Installing Ldeep"
+  sudo pip3 install python-dev-tools
+  sudo apt-get install -y libkrb5-dev krb5-config gcc
+  sudo pip3 install ldeep 
+  echo "Installing jq"
+  sudo apt install -y jq
+  echo "installing openssl" 
+  sudo apt install -y openssl
+  echo "krb5-pkinit"
+  sudo apt install -y krb5-pkinit
+  
   exit 1
 fi
 
