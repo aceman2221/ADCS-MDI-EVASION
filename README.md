@@ -8,4 +8,4 @@ Openssl: Sudo apt install openssl
 ###
 jq: sudo apt install jq
 ###
-Kerberos Packages: sudo apt install krb5-workstation krb5-libs krb5-auth-dialog krb5-pkinit
+Kerberos Packages: sudo apt install krb5-user krb5-pkinit
