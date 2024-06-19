@@ -97,7 +97,7 @@ cat <<EOL | sudo tee $KRB5_CONF > /dev/null
     $KERBEROS_REALM = {
         kdc = $LDAP_HOST
         admin_server = $LDAP_HOST
-        pkinit_anchors = $PWD/$PEM_FILE
+        pkinit_anchors = FILE:$PWD/$PEM_FILE
         pkinit_eku_checking = kpServerAuth
         pkinit_kdc_hostname = $LDAP_HOST
         pkinit_identities = $PWD/$CLIENT_CERT,$PWD/$CLIENT_KEY
